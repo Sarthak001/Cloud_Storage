@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+{% load static%}
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Register - Cloud-X</title>
+    <link rel="stylesheet" href="{% static 'assets/bootstrap/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i">
+    <link rel="stylesheet" href="{% static 'assets/fonts/fontawesome-all.min.css' %}">
+    <script src="{% static "assets/js/jquery.min.js" %}"></script>
+    <script src="{% static "assets/js/jquery-3.4.1.js" %}"></script>
+    <script>
+        $(document).ready(function() {
+            $("#register").click(function() {
+                
+                $("#fnameError").hide();
+                $("#emailError").hide();
+                $("#pass1Error").hide();
+                $("#pass2Error").hide();
+                $("#addressError").hide();
+                $("#cityError").hide();
+                $("#countryError").hide();
+
+                var CSRFtoken = $('input[name=csrfmiddlewaretoken]').val();
+                var fname = $("#exampleFirstName").val();
+                var lname = $("#exampleLastName").val();
+                var email = $("#exampleInputEmail").val();
+                var pass1 = $("#examplePasswordInput").val();
+                var pass2 = $("#exampleRepeatPasswordInput").val();
+                var address = $("#address").val();
+                var city = $("#city").val();
+                var country = $("#country").val();
+
+                if(address == "") {
+                    $("#addressError").html("<b> Invalid address</b>");
+                    $("#addressError").show();
+                }
+
+                if(city == "") {
+                    $("#cityError").html("<b> Invalid city</b>");
+                    $("#cityError").show();
+                }
+
+                if(country == "") {
+                    $("#countryError").html("<b> Invalid country</b>");
+                    $("#countryError").show();
+                }
+
+                if(fname == "") {                    
+                    $("#fnameError").html("<b>First name cannot be empty</b>");
+                    $("#fnameError").show();
+                    return;
+                }
+
+                if(email == "") {
+                    $("#emailError").html("<b>Email cannot be empty</b>");
+                    $("#emailError").show();
+                    return;
+                }
+
+                if(pass1 == "") {
+                    $("#pass1Error").html("<b>password cannot be empty</b>");
+                    $("#pass1Error").show();
+                    return;
+                }
+
+                if(pass2 == "") {
+                    $("#pass2Error").html("<b>password cannot be empty</b>");
+                    $("#pass2Error").show();
+                    return;
+                }
+
+                if(pass2 != pass1) {
+                    $("#pass2Error").html("<b>passwords do not match</b>");
+                    $("#pass2Error").show();
+                }
+
+                $.post("/register/", {
+                    fname : fname,
+                    lname : lname,
+                    email : email,
+                    pass : pass1,
+                    city : city,
+                    country : country,
+                    address : address,
+                    csrfmiddlewaretoken: CSRFtoken
+                }, function(data) {
+                    if(data == "successful") {
+                        window.location.href = "/login/"
+                    } else if(data == "email") {
+                        $("#emailError").html("<b>Email already in use</b>");
+                        $("#emailError").show();
+                    }
+                });
+            });
+        });
+    </script>
+</head>
+
+<body class="bg-gradient-primary">
+    <div class="container">
+        <div class="card shadow-lg o-hidden border-0 my-5">
+            <div class="card-body p-0">
+                <div class="row">
+                    <div class="col-lg-5 d-none d-lg-flex">
+                        <div class="flex-grow-1 bg-register-image" style="background-image: url({% static '/assets/img/dogs/image2.jpeg' %});"></div>
+                    </div>
+                    <div class="col-lg-7">
+                        <div class="p-5">
+                            <div class="text-center">
+                                <h4 class="text-dark mb-4">Create an Account!</h4>
+                            </div>
+                            <form class="user">
+                                {% csrf_token %}
+                                <div class="form-group row">
+                                    <div class="col-sm-6 mb-3 mb-sm-0">
+                                        <input class="form-control form-control-user" type="text" id="exampleFirstName" placeholder="First Name" name="first_name">
+                                        <p id="fnameError" style="color: red;"></p>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <input class="form-control form-control-user" type="text" id="exampleLastName" placeholder="Last Name" name="last_name">
+                                        <p id="lnameError" style="color: red;"></p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <input class="form-control form-control-user" type="text" id="address" aria-describedby="emailHelp" placeholder="Address" name="address">
+                                    <p id="addressError" style="color: red;"></p>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-sm-6 mb-3 mb-sm-0">
+                                        <input class="form-control form-control-user" type="text" id="city" placeholder="City" name="City">
+                                        <p id="cityError" style="color: red;"></p>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <input class="form-control form-control-user" type="text" id="country" placeholder="Country" name="country">
+                                        <p id="countryError" style="color: red;"></p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <input class="form-control form-control-user" type="email" id="exampleInputEmail" aria-describedby="emailHelp" placeholder="Email Address" name="email">
+                                    <p id="emailError" style="color: red;"></p>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-sm-6 mb-3 mb-sm-0">
+                                        <input class="form-control form-control-user" type="password" id="examplePasswordInput" placeholder="Password" name="password">
+                                        <p id="pass1Error" style="color: red;"></p>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <input class="form-control form-control-user" type="password" id="exampleRepeatPasswordInput" placeholder="Repeat Password" name="password_repeat">
+                                        <p id="pass2Error" style="color: red;"></p>
+                                    </div>
+                                </div><button class="btn btn-primary btn-block text-white btn-user" type="button" id="register">Register Account</button>
+                                <hr>
+                            </form>
+                            <div class="text-center"><a class="small" href="{% url "forgot_password" %}">Forgot Password?</a></div>
+                            <div class="text-center"><a class="small" href="/login">Already have an account? Login!</a></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="{% static "assets/js/jquery.min.js" %}"></script>
+    <script src= "{% static "assets/bootstrap/js/bootstrap.min.js" %}"></script>
+    <script src= "{% static "assets/js/chart.min.js" %}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.js"></script>
+    <script src="{% static "assets/js/script.min.js" %}"></script>
+</body>
+
+</html>

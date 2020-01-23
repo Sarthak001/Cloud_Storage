@@ -1,0 +1,17 @@
+<html>
+    <head>
+
+        <title>upload file</title>
+
+    </head>
+    <body>
+        <form method="POST" enctype="multipart/form-data" >
+            {% csrf_token %}
+            <input type="file" name='document'/>
+            <button type="submit">submit</button>
+        </form>
+        {% for msg in messages %}
+        {{msg}}
+        {% endfor %}
+    </body>
+</html>
